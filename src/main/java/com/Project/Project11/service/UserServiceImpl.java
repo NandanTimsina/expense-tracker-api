@@ -1,6 +1,8 @@
 package com.Project.Project11.service;
 
+import com.Project.Project11.model.Expense;
 import com.Project.Project11.model.User;
+import com.Project.Project11.repository.ExpenseRepository;
 import com.Project.Project11.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private  final UserRepository userRepository;
+    private final ExpenseRepository expenseRepository;
 
     @Override
     public User createUser(User user) {
@@ -42,4 +45,9 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
-}
+    @Override
+    public List<Expense> getAll(Long userId) {
+        return expenseRepository.findByUser_UserId(userId);
+    }
+    }
+
