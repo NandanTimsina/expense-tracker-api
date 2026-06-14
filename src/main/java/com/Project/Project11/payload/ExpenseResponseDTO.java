@@ -1,26 +1,19 @@
-package com.Project.Project11.model;
-import jakarta.persistence.*;
+package com.Project.Project11.payload;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
-@Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Expense {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+public class ExpenseResponseDTO {
     private Long expenseId;
     private String title;
     private Long amount;
     private String note;
     private LocalDate date;
 
-    @ManyToOne
-    private Category category;
-    @ManyToOne
-    private User user;
+    private Long userId;
+    private String categoryName;
 }

@@ -18,13 +18,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    @NotBlank
     private String name;
-    @Email
     private String email;
     private String password;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<Expense> expenses;
 }

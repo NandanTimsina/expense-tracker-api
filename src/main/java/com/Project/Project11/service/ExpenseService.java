@@ -1,13 +1,15 @@
 package com.Project.Project11.service;
 
 import com.Project.Project11.model.Expense;
+import com.Project.Project11.payload.ExpenseRequestDTO;
+import com.Project.Project11.payload.ExpenseResponseDTO;
 
 import java.util.List;
 
 public interface ExpenseService {
-    List<Expense> getAll(Long UserId);
+    List<ExpenseResponseDTO> getAll(Long UserId);
 
-    Expense createExpense(Expense expense,Long categoryId,Long userId);
+    ExpenseResponseDTO createExpense(ExpenseRequestDTO expense, String CategoryName, Long userId);
 
     String deleteExpense(Long expenseId);
 }

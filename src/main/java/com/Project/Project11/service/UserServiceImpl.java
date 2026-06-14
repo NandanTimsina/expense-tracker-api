@@ -1,35 +1,51 @@
 package com.Project.Project11.service;
-
-import com.Project.Project11.model.Expense;
 import com.Project.Project11.model.User;
-import com.Project.Project11.repository.ExpenseRepository;
+import com.Project.Project11.payload.UserRequestDTO;
+import com.Project.Project11.payload.UserResponseDTO;
 import com.Project.Project11.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private  final UserRepository userRepository;
-    private final ExpenseRepository expenseRepository;
 
     @Override
-    public User createUser(User user) {
-        userRepository.save(user);
-        return user;
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+        User user=new User();
+        user.setName(userRequestDTO.getName());
+        user.setPassword(userRequestDTO.getPassword());
+        user.setEmail(userRequestDTO.getEmail());
+
+        User savedUser=userRepository.save(user);
+        UserResponseDTO userResponseDTO=new UserResponseDTO();
+
+        userResponseDTO.setName(savedUser.getName());
+        userResponseDTO.setUserId(savedUser.getUserId());
+        userResponseDTO.setEmail(savedUser.getEmail());
+
+        return userResponseDTO;
     }
 
     @Override
-    public User updateUser(User user, Long userId) {
+    public UserResponseDTO updateUser(UserRequestDTO userRequestDTO, Long userId) {
         User existingUser =userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found with Id "+userId));
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
-        userRepository.save(existingUser);
-        return existingUser;
+        existingUser.setName(userRequestDTO.getName());
+        existingUser.setPassword(userRequestDTO.getPassword());
+        existingUser.setEmail(userRequestDTO.getEmail());
+
+        User updatedUser=userRepository.save(existingUser);
+
+        UserResponseDTO userResponseDTO=new UserResponseDTO();
+        userResponseDTO.setName(updatedUser.getName());
+        userResponseDTO.setEmail(updatedUser.getEmail());
+        userResponseDTO.setUserId(updatedUser.getUserId());
+
+        return userResponseDTO;
     }
 
     @Override
@@ -41,13 +57,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users= userRepository.findAll();
 
-    @Override
-    public List<Expense> getAll(Long userId) {
-        return expenseRepository.findByUser_UserId(userId);
+        List<UserResponseDTO> userResponseDTOS=new ArrayList<>();
+
+        for(User user: users){
+            UserResponseDTO userObject=new UserResponseDTO();
+            userObject.setUserId(user.getUserId());
+            userObject.setName(user.getName());
+            userObject.setEmail(user.getEmail());
+
+            userResponseDTOS.add(userObject);
+        }
+        return userResponseDTOS;
     }
     }
 

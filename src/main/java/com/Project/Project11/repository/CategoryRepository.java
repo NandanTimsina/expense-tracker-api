@@ -3,6 +3,7 @@ package com.Project.Project11.repository;
 import com.Project.Project11.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
 public interface CategoryRepository extends JpaRepository<Category,Long> {
+    Category findByCategoryName(String categoryName);
+
 }

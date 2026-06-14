@@ -16,12 +16,10 @@
     public class Category {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private String categoryId;
-        @NotBlank
+        private Long categoryId;
         private String categoryName;
 
         @OneToMany(mappedBy = "category")
-        @JsonIgnore
         private List<Expense> expense;
 
 
