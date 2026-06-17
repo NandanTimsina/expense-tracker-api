@@ -1,5 +1,4 @@
 package com.Project.Project11.controller;
-import com.Project.Project11.model.Category;
 import com.Project.Project11.payload.CategoryRequestDTO;
 import com.Project.Project11.payload.CategoryResponseDTO;
 import com.Project.Project11.service.CategoryService;

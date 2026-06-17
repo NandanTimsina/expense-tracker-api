@@ -1,6 +1,4 @@
 package com.Project.Project11.service;
-
-import com.Project.Project11.model.Expense;
 import com.Project.Project11.payload.ExpenseRequestDTO;
 import com.Project.Project11.payload.ExpenseResponseDTO;
 

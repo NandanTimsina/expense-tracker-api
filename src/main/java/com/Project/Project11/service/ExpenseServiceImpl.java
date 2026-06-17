@@ -1,4 +1,5 @@
 package com.Project.Project11.service;
+import com.Project.Project11.exceptions.ResourceNotFoundException;
 import com.Project.Project11.model.Category;
 import com.Project.Project11.model.Expense;
 import com.Project.Project11.model.User;
@@ -9,10 +10,8 @@ import com.Project.Project11.repository.ExpenseRepository;
 import com.Project.Project11.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +23,9 @@ public class ExpenseServiceImpl implements ExpenseService{
     @Override
     public List<ExpenseResponseDTO> getAll(Long UserId) {
         List<Expense> expenses= expenseRepository.findByUser_UserId(UserId);
+        if(expenses.isEmpty()){
+            throw new ResourceNotFoundException("Expense","Id: "+UserId);
+        }
         List<ExpenseResponseDTO> expenseResponseDTOS=new ArrayList<>();
 
         for(Expense expense: expenses){
@@ -46,9 +48,13 @@ public class ExpenseServiceImpl implements ExpenseService{
     public ExpenseResponseDTO createExpense(ExpenseRequestDTO expenseRequestDTO,
                                             String categoryName, Long userId) {
         Expense expense=new Expense();
-        User user =userRepository.findById(userId)
-                .orElseThrow(RuntimeException::new);
-        Category category=categoryRepository.findByCategoryName(categoryName);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User", "Id: " + userId));
+            Category category=categoryRepository.findByCategoryName(categoryName);
+            if(category==null){
+                throw new ResourceNotFoundException("Category"," "+categoryName);
+            }
 
         expense.setUser(user);
         expense.setCategory(category);
@@ -69,12 +75,12 @@ public class ExpenseServiceImpl implements ExpenseService{
         expenseResponseDTO.setCategoryName(savedExpense.getCategory().getCategoryName());
 
         return expenseResponseDTO;
-
-
     }
 
     @Override
     public String deleteExpense(Long expenseId) {
+        expenseRepository.findById(expenseId)
+                        .orElseThrow(()-> new ResourceNotFoundException("Expense","Id: "+expenseId));
         expenseRepository.deleteById(expenseId);
         return "Item deleted successfully";
     }

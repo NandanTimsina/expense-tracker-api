@@ -1,11 +1,11 @@
 package com.Project.Project11.service;
+import com.Project.Project11.exceptions.ResourceNotFoundException;
 import com.Project.Project11.model.Category;
 import com.Project.Project11.payload.CategoryRequestDTO;
 import com.Project.Project11.payload.CategoryResponseDTO;
 import com.Project.Project11.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +30,10 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategoryResponseDTO> getAll() {
         List<Category> categories=categoryRepository.findAll();
+        if(categories.isEmpty()){
+            throw new ResourceNotFoundException("Category");
+        }
         List<CategoryResponseDTO> categoryResponseDTOS=new ArrayList<>();
-
         for(Category category: categories){
             CategoryResponseDTO categoryResponseDTO=new CategoryResponseDTO();
 

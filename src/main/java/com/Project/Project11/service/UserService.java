@@ -1,8 +1,4 @@
 package com.Project.Project11.service;
-
-import com.Project.Project11.model.Expense;
-import com.Project.Project11.model.User;
-import com.Project.Project11.payload.ExpenseResponseDTO;
 import com.Project.Project11.payload.UserRequestDTO;
 import com.Project.Project11.payload.UserResponseDTO;
 

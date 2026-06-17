@@ -1,4 +1,5 @@
 package com.Project.Project11.service;
+import com.Project.Project11.exceptions.ResourceNotFoundException;
 import com.Project.Project11.model.User;
 import com.Project.Project11.payload.UserRequestDTO;
 import com.Project.Project11.payload.UserResponseDTO;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDTO updateUser(UserRequestDTO userRequestDTO, Long userId) {
         User existingUser =userRepository.findById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found with Id "+userId));
+                .orElseThrow(()-> new ResourceNotFoundException("User ","Id: "+userId));
         existingUser.setName(userRequestDTO.getName());
         existingUser.setPassword(userRequestDTO.getPassword());
         existingUser.setEmail(userRequestDTO.getEmail());
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public String deleteUser(Long userId) {
         User existingUser=userRepository.findById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found with Id"+userId));
+                .orElseThrow(()-> new ResourceNotFoundException("User", "Id: " + userId));
         userRepository.delete(existingUser);
         return "User deleted successfully ";
     }
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<UserResponseDTO> getAllUsers() {
         List<User> users= userRepository.findAll();
+        if(users.isEmpty()){
+            throw new ResourceNotFoundException("User");
+        }
 
         List<UserResponseDTO> userResponseDTOS=new ArrayList<>();
 
