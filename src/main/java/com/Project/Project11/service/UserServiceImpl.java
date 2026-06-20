@@ -5,6 +5,7 @@ import com.Project.Project11.payload.UserRequestDTO;
 import com.Project.Project11.payload.UserResponseDTO;
 import com.Project.Project11.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
     private  final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user=new User();
         user.setName(userRequestDTO.getName());
-        user.setPassword(userRequestDTO.getPassword());
+        //user.setPassword(userRequestDTO.getPassword());
+        user.setPassword(
+                passwordEncoder.encode(userRequestDTO.getPassword())
+        );
         user.setEmail(userRequestDTO.getEmail());
 
         User savedUser=userRepository.save(user);
