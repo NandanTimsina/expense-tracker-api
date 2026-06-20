@@ -20,4 +20,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Expense> expenses;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

@@ -21,6 +21,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((requests) ->
                 requests.requestMatchers(HttpMethod.POST,"/api/user/signup").permitAll()
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/api/user/**")
+                        .hasAnyRole("USER","ADMIN")
                 .anyRequest().authenticated());
         http.httpBasic(withDefaults());
         return http.build();
