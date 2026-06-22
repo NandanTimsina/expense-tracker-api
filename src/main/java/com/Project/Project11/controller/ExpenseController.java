@@ -16,23 +16,23 @@ import java.util.List;
 public class ExpenseController {
     private final ExpenseService expenseService;
 
-    @GetMapping("/user/expenses/{UserId}")
-    public ResponseEntity<List<ExpenseResponseDTO>>  getAll(@PathVariable Long UserId){
-        List<ExpenseResponseDTO> list=expenseService.getAll(UserId);
+    @GetMapping("/user/expenses")
+    public ResponseEntity<List<ExpenseResponseDTO>>  getAll(){
+        List<ExpenseResponseDTO> list=expenseService.getAll();
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
-    @PostMapping("/user/{userId}/expense/{categoryName}/create")
+    @PostMapping("/user/expense/{categoryName}/create")
     public ResponseEntity<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expense,
-                                                            @PathVariable String categoryName,
-                                                            @PathVariable Long userId){
+                                                            @PathVariable String categoryName
+                                                            ){
 
-        ExpenseResponseDTO expenseResponseDTO=expenseService.createExpense(expense,categoryName,userId);
+        ExpenseResponseDTO expenseResponseDTO=expenseService.createExpense(expense,categoryName);
         return new ResponseEntity<>(expenseResponseDTO, HttpStatus.CREATED);
     }
-    @DeleteMapping("/user/expense/delete/{ExpenseId}")
-    public ResponseEntity<String> deleteExpense(@PathVariable Long ExpenseId){
-        String string= expenseService.deleteExpense(ExpenseId);
+    @DeleteMapping("/user/expense/delete/{expenseId}")
+    public ResponseEntity<String> deleteExpense(@PathVariable Long expenseId){
+        String string= expenseService.deleteExpense(expenseId);
         return new ResponseEntity<>(string,HttpStatus.OK);
     }
 

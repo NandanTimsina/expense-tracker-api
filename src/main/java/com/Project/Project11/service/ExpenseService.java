@@ -5,9 +5,8 @@ import com.Project.Project11.payload.ExpenseResponseDTO;
 import java.util.List;
 
 public interface ExpenseService {
-    List<ExpenseResponseDTO> getAll(Long UserId);
 
-    ExpenseResponseDTO createExpense(ExpenseRequestDTO expense, String CategoryName, Long userId);
-
+    List<ExpenseResponseDTO> getAll();
+    ExpenseResponseDTO createExpense(ExpenseRequestDTO expense, String CategoryName);
     String deleteExpense(Long expenseId);
 }

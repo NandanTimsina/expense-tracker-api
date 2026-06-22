@@ -9,6 +9,9 @@ import com.Project.Project11.repository.CategoryRepository;
 import com.Project.Project11.repository.ExpenseRepository;
 import com.Project.Project11.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +24,12 @@ public class ExpenseServiceImpl implements ExpenseService{
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     @Override
-    public List<ExpenseResponseDTO> getAll(Long UserId) {
-        List<Expense> expenses= expenseRepository.findByUser_UserId(UserId);
-        if(expenses.isEmpty()){
-            throw new ResourceNotFoundException("Expense","Id: "+UserId);
-        }
+    public List<ExpenseResponseDTO> getAll() {
+        Authentication auth= SecurityContextHolder.getContext()
+                .getAuthentication();
+        String email=auth.getName();
+
+        List<Expense> expenses= expenseRepository.findByUser_Email(email);
         List<ExpenseResponseDTO> expenseResponseDTOS=new ArrayList<>();
 
         for(Expense expense: expenses){
@@ -46,11 +50,15 @@ public class ExpenseServiceImpl implements ExpenseService{
 
     @Override
     public ExpenseResponseDTO createExpense(ExpenseRequestDTO expenseRequestDTO,
-                                            String categoryName, Long userId) {
+                                            String categoryName) {
         Expense expense=new Expense();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User", "Id: " + userId));
+
+        Authentication auth=SecurityContextHolder.getContext()
+                .getAuthentication();
+        String email=auth.getName();
+        User user=userRepository.findByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("User","email: "+email));
+
             Category category=categoryRepository.findByCategoryName(categoryName);
             if(category==null){
                 throw new ResourceNotFoundException("Category"," "+categoryName);
@@ -79,9 +87,18 @@ public class ExpenseServiceImpl implements ExpenseService{
 
     @Override
     public String deleteExpense(Long expenseId) {
-        expenseRepository.findById(expenseId)
+        Authentication auth=SecurityContextHolder.getContext()
+                        .getAuthentication();
+        String email=auth.getName();
+        User user=userRepository.findByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("User","Email id: "+email));
+
+        Expense expense=expenseRepository.findById(expenseId)
                         .orElseThrow(()-> new ResourceNotFoundException("Expense","Id: "+expenseId));
-        expenseRepository.deleteById(expenseId);
+        if(!expense.getUser().getUserId().equals(user.getUserId())){
+            throw new AccessDeniedException("You cannot delete this");
+        }
+        expenseRepository.delete(expense);
         return "Item deleted successfully";
     }
 
